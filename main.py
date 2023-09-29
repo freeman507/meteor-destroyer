@@ -5,8 +5,10 @@ import pygame
 
 pygame.init()
 pygame.display.set_caption("Meteour Destroyer")
-janela = pygame.display.set_mode((1024, 768))
-imagem_fundo = pygame.transform.scale(pygame.image.load("images/background.jpg"), (1024, 768))
+largura_janela = 800
+altura_janela = 600
+janela = pygame.display.set_mode((largura_janela, altura_janela))
+imagem_fundo = pygame.transform.scale(pygame.image.load("images/background.jpg"), (largura_janela, altura_janela))
 
 largura_nave = 192
 altura_nave = 192
@@ -27,7 +29,7 @@ for index in range(1, 10):
 jogando = True
 
 pos_x_imagem_fundo_1 = 0
-pos_x_imagem_fundo_2 = 1024
+pos_x_imagem_fundo_2 = largura_janela
 
 velocidade_jogo = 60
 velocidade_fundo = 0.5
@@ -58,16 +60,16 @@ som_explosao = pygame.mixer.Sound('songs/hq-explosion-6288.mp3')
 som_explosao.set_volume(0.1)
 
 prefacio = True
-imagem_prefacio = pygame.image.load("images/prefacio.png")
+imagem_prefacio = pygame.transform.scale(pygame.image.load("images/prefacio.png"), (largura_janela, altura_janela))
 
 def movimenta_fundo():
     global pos_x_imagem_fundo_1, pos_x_imagem_fundo_2
     pos_x_imagem_fundo_1 -= velocidade_fundo
-    if pos_x_imagem_fundo_1 < -1024:
-        pos_x_imagem_fundo_1 = 1024
+    if pos_x_imagem_fundo_1 < -largura_janela:
+        pos_x_imagem_fundo_1 = largura_janela
     pos_x_imagem_fundo_2 -= velocidade_fundo
-    if pos_x_imagem_fundo_2 < -1024:
-        pos_x_imagem_fundo_2 = 1024
+    if pos_x_imagem_fundo_2 < -largura_janela:
+        pos_x_imagem_fundo_2 = largura_janela
     janela.blit(imagem_fundo, (pos_x_imagem_fundo_1, 0))
     janela.blit(imagem_fundo, (pos_x_imagem_fundo_2, 0))
 
@@ -95,7 +97,7 @@ def movimenta_tiros():
     for tiro in tiros:
         tiro["pos_x"] += velocidade_tiro
         janela.blit(imagem_tiro, (tiro["pos_x"], tiro["pos_y"]))
-        if tiro["pos_x"] < 1024:
+        if tiro["pos_x"] < largura_janela:
             tiros_em_tela.append(tiro)
     tiros = tiros_em_tela
 
@@ -123,8 +125,8 @@ def cria_meteoros():
             meteoro = {
                 "subir": random.random() % 2 == 0,
                 "index": random.randint(0, 8),
-                "pos_x": random.randint(50, 1150) + 1024,
-                "pos_y": random.randint(0, 700)
+                "pos_x": random.randint(0, largura_janela) + largura_janela,
+                "pos_y": random.randint(0, altura_janela - 50)
             }
             meteoros_no_jogo.append(meteoro)
         ultimo_tempo = tempo_atual
@@ -135,12 +137,12 @@ def cria_meteoros():
     for meteoro in meteoros_no_jogo:
         if meteoro["subir"]:
             meteoro["pos_y"] -= 2
-            if meteoro["pos_y"] < 10:
+            if meteoro["pos_y"] < 0:
                 meteoro["subir"] = False
 
         if not meteoro["subir"]:
             meteoro["pos_y"] += 2
-            if meteoro["pos_y"] > 700:
+            if meteoro["pos_y"] > (altura_janela - 50):
                 meteoro["subir"] = True
 
         meteoro["pos_x"] -= 2
